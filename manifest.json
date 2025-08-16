@@ -1,0 +1,72 @@
+{
+  "name": "Aiuto Visivo - Assistente per Non Vedenti",
+  "short_name": "Aiuto Visivo",
+  "description": "App di assistenza per bambini non vedenti con GPS e navigazione vocale",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#4CAF50",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "it",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["accessibility", "navigation", "utilities"],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dove sono?",
+      "short_name": "Posizione",
+      "description": "Rileva la posizione attuale",
+      "url": "/?action=location",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Vai a Casa",
+      "short_name": "Casa",
+      "description": "Navigazione verso casa",
+      "url": "/?action=home",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Emergenza",
+      "short_name": "SOS",
+      "description": "Chiamata di emergenza",
+      "url": "/?action=emergency",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
