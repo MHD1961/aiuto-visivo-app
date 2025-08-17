@@ -7,110 +7,185 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4CAF50">
+    
+    <!-- PWA Icons -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
-    <!-- Parent Mode Section -->
-    <div id="parentMode" class="container hidden">
-        <h1>👨‍👩‍👧‍👦 Modalità Genitore</h1>
-        <div class="button-grid">
-            <button class="nav-button" onclick="showChildMode()">👶 Vai a Modalità Bambino</button>
-            <button class="nav-button" onclick="showSettings()">⚙️ Impostazioni</button>
-            <button class="nav-button" onclick="showMonitoring()">📍 Monitoraggio</button>
-            <button class="nav-button" onclick="managePlaces()">🏠 Gestisci Luoghi</button>
-        </div>
-    </div>
+    <!-- Toggle Mode Button -->
+    <button class="toggle-mode" onclick="toggleMode()">
+        <span id="modeText">👦 Modalità Bambino</span>
+    </button>
 
-    <!-- Child Mode Section -->
-    <div id="childMode" class="container">
-        <h1>👶 Modalità Bambino</h1>
-        <div class="button-grid">
-            <button class="large-button primary" onclick="getCurrentLocation()">📍 Dove sono?</button>
-            <button class="large-button secondary" onclick="navigateToPlace('casa')">🏠 Casa</button>
-            <button class="large-button secondary" onclick="navigateToPlace('scuola')">🏫 Scuola</button>
-            <button class="large-button secondary" onclick="navigateToPlace('fermata')">🚌 Fermata Bus</button>
-            <button class="large-button emergency" onclick="callEmergency()">🚨 Emergenza</button>
-            <button class="nav-button" onclick="showParentMode()">👨‍👩‍👧‍👦 Modalità Genitore</button>
+    <!-- Parent Mode -->
+    <div class="container" id="parentMode">
+        <!-- Header -->
+        <div class="header">
+            <h1>👁️ Aiuto Visivo</h1>
+            <div class="subtitle">Sistema di assistenza per bambini ipovedenti</div>
+            <div class="developer">Sviluppato da: Ing. Maher Madany</div>
+            <div class="version">v2.0 - Precisione GPS migliorata</div>
         </div>
-    </div>
 
-    <!-- Settings Section -->
-    <div id="settingsSection" class="container hidden">
-        <h1>⚙️ Impostazioni</h1>
-        <div class="settings-group">
-            <h3>🔊 Audio</h3>
-            <label>Volume:</label>
-            <input type="range" id="volumeSlider" min="0" max="100" value="80" onchange="adjustVolume()">
-            <label>Velocità Voce:</label>
-            <input type="range" id="speechRateSlider" min="0.5" max="2" step="0.1" value="1" onchange="adjustSpeechRate()">
+        <!-- Welcome Message -->
+        <div class="welcome-message" id="welcomeMessage">
+            🎯 Benvenuto nel sistema Aiuto Visivo<br>
+            ✨ Progetto dell'Ing. Maher Madany per aiutare i bambini ipovedenti<br>
+            🚀 Ora con precisione GPS 3-5 metri e navigazione vocale avanzata
         </div>
-        
-        <div class="settings-group">
-            <h3>📱 Contatti</h3>
-            <label>Numero Emergenza:</label>
-            <input type="tel" id="emergencyNumber" placeholder="+39 123 456 7890">
-            <button onclick="saveEmergencyNumber()">💾 Salva</button>
-        </div>
-        
-        <button class="nav-button" onclick="showParentMode()">🔙 Torna Indietro</button>
-    </div>
 
-    <!-- Monitoring Section -->
-    <div id="monitoringSection" class="container hidden">
-        <h1>📍 Monitoraggio</h1>
-        <div id="locationHistory"></div>
-        <div id="mapContainer"></div>
-        <button class="nav-button" onclick="showParentMode()">🔙 Torna Indietro</button>
-    </div>
-
-    <!-- Add Place Section -->
-    <div id="addPlaceSection" class="container hidden">
-        <h1>➕ Aggiungi Luogo</h1>
-        <div class="form-group">
-            <label>Nome del Luogo:</label>
-            <input type="text" id="placeName" placeholder="es. Casa, Scuola">
+        <!-- Connection Status -->
+        <div class="connection-status status-connected" id="connectionStatus">
+            🟢 Sistema Pronto - Firebase Auto-Configurato
         </div>
-        <div class="form-group">
-            <label>Tipo:</label>
-            <select id="placeType">
+
+        <!-- Add Place Section -->
+        <div class="section" id="addPlaceSection">
+            <h2>➕ Aggiungi Nuovo Luogo</h2>
+            
+            <input type="text" id="placeName" placeholder="Nome del luogo (es: Casa, Scuola)" aria-label="Nome del luogo">
+            
+            <select id="placeType" aria-label="Tipo di luogo">
                 <option value="casa">🏠 Casa</option>
                 <option value="scuola">🏫 Scuola</option>
                 <option value="fermata">🚌 Fermata Bus</option>
+                <option value="negozio">🛒 Negozio</option>
+                <option value="parco">🌳 Parco</option>
+                <option value="ospedale">🏥 Ospedale</option>
+                <option value="amico">👥 Casa Amico</option>
                 <option value="altro">📍 Altro</option>
             </select>
+            
+            <input type="text" id="placeAddress" placeholder="Indirizzo (opzionale)" aria-label="Indirizzo del luogo">
+            
+            <button class="btn btn-primary large-btn" onclick="saveCurrentLocation()">
+                📍 Usa Posizione Attuale (GPS Preciso)
+            </button>
+            
+            <button class="btn btn-info large-btn" onclick="saveManualLocation()">
+                ✏️ Inserisci Manualmente
+            </button>
         </div>
-        <div class="button-grid">
-            <button class="primary" onclick="getCurrentLocationForPlace()">📍 Usa Posizione Attuale</button>
-            <button class="secondary" onclick="savePlace()">💾 Salva Luogo</button>
-            <button class="nav-button" onclick="showParentMode()">🔙 Annulla</button>
+
+        <!-- Places List -->
+        <div class="section" id="placesSection">
+            <h2>📋 Luoghi Salvati</h2>
+            <div id="placesList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Caricamento luoghi...</p>
+                </div>
+            </div>
+            
+            <!-- Quick Add Default Places -->
+            <div class="quick-actions">
+                <button class="btn btn-info" onclick="addDefaultPlaces()">
+                    🏠 Aggiungi Luoghi Base (Casa, Scuola, Bus)
+                </button>
+            </div>
         </div>
+
+        <!-- Settings Section -->
+        <div class="section" id="settingsSection">
+            <h2>⚙️ Impostazioni Audio</h2>
+            
+            <label for="volumeSlider">🔊 Volume Voce:</label>
+            <input type="range" id="volumeSlider" min="0" max="100" value="80" onchange="adjustVolume()">
+            <span id="volumeValue">80%</span>
+            
+            <label for="speechRateSlider">🗣️ Velocità Voce:</label>
+            <input type="range" id="speechRateSlider" min="0.5" max="2" step="0.1" value="1" onchange="adjustSpeechRate()">
+            <span id="speechRateValue">Normale</span>
+            
+            <label for="emergencyNumber">🚨 Numero Emergenza:</label>
+            <input type="tel" id="emergencyNumber" value="+39 112" placeholder="+39 123 456 7890">
+            <button class="btn btn-primary" onclick="saveEmergencyNumber()">💾 Salva</button>
+            
+            <button class="btn btn-info" onclick="testVoice()">
+                🎤 Testa Voce Italiana
+            </button>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="section" id="statsSection">
+            <h2>📊 Statistiche Utilizzo</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalLocations">0</div>
+                    <div class="stat-label">Luoghi Salvati</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalNavigations">0</div>
+                    <div class="stat-label">Navigazioni</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="averageAccuracy">0m</div>
+                    <div class="stat-label">Precisione Media</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Messages -->
+        <div class="status" id="statusMessage"></div>
     </div>
 
-    <!-- Places Management Section -->
-    <div id="placesSection" class="container hidden">
-        <h1>🏠 Luoghi Salvati</h1>
-        <div id="savedPlacesList"></div>
-        <div class="button-grid">
-            <button class="primary" onclick="showAddPlace()">➕ Aggiungi Luogo</button>
-            <button class="nav-button" onclick="showParentMode()">🔙 Torna Indietro</button>
+    <!-- Child Mode -->
+    <div class="child-mode" id="childMode">
+        <div class="child-header">
+            <h1>👦 Dove Vuoi Andare?</h1>
+            <p class="child-subtitle">Premi il pulsante grande per andare dove vuoi</p>
+        </div>
+        
+        <div class="child-buttons">
+            <button class="big-button home-btn" onclick="navigateToPlace('casa')">
+                <div class="btn-icon">🏠</div>
+                <div class="btn-text">CASA</div>
+            </button>
+            
+            <button class="big-button school-btn" onclick="navigateToPlace('scuola')">
+                <div class="btn-icon">🏫</div>
+                <div class="btn-text">SCUOLA</div>
+            </button>
+            
+            <button class="big-button bus-btn" onclick="navigateToPlace('fermata')">
+                <div class="btn-icon">🚌</div>
+                <div class="btn-text">FERMATA BUS</div>
+            </button>
+            
+            <button class="big-button location-btn" onclick="whereAmI()">
+                <div class="btn-icon">📍</div>
+                <div class="btn-text">DOVE SONO?</div>
+            </button>
+            
+            <button class="big-button emergency-btn" onclick="callEmergency()">
+                <div class="btn-icon">🚨</div>
+                <div class="btn-text">AIUTO!</div>
+            </button>
+        </div>
+        
+        <!-- Voice Control Hints -->
+        <div class="voice-hints">
+            <p>💡 Puoi anche dire: "Porta a casa", "Dove sono", "Aiuto"</p>
         </div>
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="overlay hidden">
+    <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Caricamento...</p>
+            <div class="spinner large"></div>
+            <p id="loadingText">Caricamento...</p>
         </div>
     </div>
 
-    <!-- Status Bar -->
-    <div id="statusBar">
-        <span id="connectionStatus">🔴 Non Connesso</span>
-        <span id="gpsStatus">📡 GPS: Non Attivo</span>
-        <span id="batteryStatus">🔋 100%</span>
+    <!-- GPS Status Bar -->
+    <div class="gps-status" id="gpsStatus">
+        <span id="gpsAccuracy">📡 GPS: Inizializzazione...</span>
+        <span id="batteryLevel">🔋 100%</span>
     </div>
 
-    <!-- Firebase Scripts -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     
